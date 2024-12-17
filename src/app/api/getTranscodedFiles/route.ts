@@ -19,10 +19,10 @@ export async function GET() {
         // CREATE INTERFACE FOR DATA
         stream.on('data', async (obj: any) => {
           try {
-            // Check if the file actually exists
-            await outputMinioClient.statObject(bucketName, obj.name);
+            // check if the file actually exists
+            //await outputMinioClient.statObject(bucketName, obj.name);
 
-            // Add the valid file to the list
+            // add existing files to the list
             files.push({
               bucket: bucketName,
               key: obj.name,
