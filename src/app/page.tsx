@@ -1,9 +1,18 @@
-import HelloWorld from '../components/hello/HelloWorld';
+'use client'
+import {Link, Button} from "@nextui-org/react";
 
 export default function Page() {
   return (
     <main className="flex justify-center items-center w-screen h-screen">
-      <HelloWorld />
+        <Button
+          showAnchorIcon
+          as={Link}
+          color="primary"
+          href="/upload"
+          variant="solid"
+        >
+          Upload and Transcode
+      </Button>
     </main>
   );
 }
