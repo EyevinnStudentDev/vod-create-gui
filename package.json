@@ -11,7 +11,8 @@
     "dev": "set NODE_OPTIONS=--inspect && next dev",
     "build": "next build",
     "start": "next start",
-    "postversion": "git push && git push --tags"
+    "postversion": "git push && git push --tags",
+    "format": "prettier --write ."
   },
   "license": "MIT",
   "engines": {

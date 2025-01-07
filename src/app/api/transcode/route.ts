@@ -7,11 +7,10 @@ interface PresignedUrlData {
   url: string;
 }
 
-
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { presignedUrls }: {presignedUrls: PresignedUrlData[]} = body;
+    const { presignedUrls }: { presignedUrls: PresignedUrlData[] } = body;
     console.log(presignedUrls);
 
     if (!presignedUrls || !Array.isArray(presignedUrls)) {
@@ -19,18 +18,17 @@ export async function POST(req: Request) {
     }
 
     // init Eyevinn transcoding SDK
-    const ctx = new Context({ personalAccessToken: process.env.OSC_ACCESS_TOKEN });
-    ctx.activateService("minio");
+    const ctx = new Context({
+      personalAccessToken: process.env.OSC_ACCESS_TOKEN
+    });
+    ctx.activateService('minio');
     const pipeline = await createVodPipeline('output', ctx);
 
     // transcode all presigned URLs in the array
     const results = await Promise.all(
       presignedUrls.map(async (urlData) => {
-        //DEBUGG
-        console.log("URL: ", urlData.url);
-        //DEBUGG END
         const vod = await createVod(pipeline, urlData.url, ctx);
-        console.log("VOD :  ",vod)
+        console.log('VOD :  ', vod);
         return vod;
       })
     );
@@ -38,6 +36,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: 'Transcoding successful', results });
   } catch (error: any) {
     console.error('Error during transcoding:', error);
-    return NextResponse.json({ error: 'Transcoding failed', details: error.message }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Transcoding failed', details: error.message },
+      { status: 500 }
+    );
   }
 }

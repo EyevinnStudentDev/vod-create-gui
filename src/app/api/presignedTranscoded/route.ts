@@ -1,13 +1,13 @@
-import { outputMinioClient } from '../../lib/file-managment'; 
+import { outputMinioClient } from '../../lib/file-managment';
 import { NextRequest, NextResponse } from 'next/server';
 
 const bucketName = 'output';
-const expiry = 60 * 60 // Default to 1 hour if expiry is not provided
+const expiry = 60 * 60; // Default to 1 hour if expiry is not provided
 
 export async function POST(req: NextRequest) {
   try {
     const filePath = await req.json(); // expect filePath and expiry in the request body
-    console.log("FILEPATH IN TRANSCODE: ", filePath);
+    console.log('FILEPATH IN TRANSCODE: ', filePath);
     if (!filePath) {
       return NextResponse.json(
         { error: 'Missing filePath in request body' },

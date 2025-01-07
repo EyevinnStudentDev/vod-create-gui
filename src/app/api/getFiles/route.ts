@@ -1,38 +1,13 @@
 import { NextResponse } from 'next/server';
 import { minioClient } from '../../lib/file-managment';
-/*
-const bucketName = process.env.AWS_TENANT_BUCKET || '';
-
-export async function GET() {
-  try {
-    const objectsList = [];
-    const objectsStream = minioClient.listObjectsV2(bucketName, '', true);
-
-    for await (const obj of objectsStream) {
-      objectsList.push({
-        name: obj.name,
-        size: obj.size,
-        lastModified: obj.lastModified,
-      });
-    }
-
-    return NextResponse.json(objectsList);
-  } catch (error) {
-    console.error('Error fetching files from MinIO:', error);
-    return NextResponse.json({ error: 'Failed to fetch files' }, { status: 500 });
-  }
-}*/
-
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Client } from 'minio';
 
-
 export async function GET() {
-
   try {
     // fetch all buckets
     const buckets = await minioClient.listBuckets();
-    console.log("buckets in input: ", buckets);
+    console.log('buckets in input: ', buckets);
 
     const allFiles: any[] = [];
     for (const bucket of buckets) {
@@ -47,7 +22,7 @@ export async function GET() {
             bucket: bucketName,
             key: obj.name,
             size: obj.size,
-            lastModified: obj.lastModified,
+            lastModified: obj.lastModified
           });
         });
 

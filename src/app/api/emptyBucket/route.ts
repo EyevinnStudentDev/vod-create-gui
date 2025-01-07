@@ -1,4 +1,4 @@
-import { outputMinioClient } from '../../lib/file-managment'; 
+import { outputMinioClient } from '../../lib/file-managment';
 import { NextRequest, NextResponse } from 'next/server';
 
 const bucketName = 'output';
@@ -25,7 +25,7 @@ export async function DELETE(req: NextRequest) {
     );
 
     return NextResponse.json({
-      message: `All ${objectsList.length} objects deleted successfully`,
+      message: `All ${objectsList.length} objects deleted successfully`
     });
   } catch (error) {
     console.error('Error emptying bucket:', error);

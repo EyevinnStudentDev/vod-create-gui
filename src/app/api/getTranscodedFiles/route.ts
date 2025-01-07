@@ -2,11 +2,10 @@ import { outputMinioClient } from '../../lib/file-managment'; // Path to your Mi
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET() {
-
   try {
     // fetch all buckets
     const buckets = await outputMinioClient.listBuckets();
-    console.log("buckets in output : ", buckets);
+    console.log('buckets in output : ', buckets);
 
     const allFiles: any[] = [];
     for (const bucket of buckets) {
@@ -27,7 +26,7 @@ export async function GET() {
               bucket: bucketName,
               key: obj.name,
               size: obj.size,
-              lastModified: obj.lastModified,
+              lastModified: obj.lastModified
             });
           } catch (statError) {
             console.warn(`File not found: ${obj.name}`, statError);

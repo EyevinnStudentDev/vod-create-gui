@@ -1,18 +1,19 @@
-"use client";
+'use client';
 
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import UploadFilesFormUI from '../../components/video/upload-form';
 import { Context } from '@osaas/client-core';
-import { createVod, createVodPipeline } from '@osaas/client-transcode';import { 
-    Table,
-    TableHeader,
-    TableBody,
-    TableColumn,
-    TableRow,
-    TableCell,
-    getKeyValue
+import { createVod, createVodPipeline } from '@osaas/client-transcode';
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableColumn,
+  TableRow,
+  TableCell,
+  getKeyValue
 } from '@nextui-org/table';
-import { Button } from "@nextui-org/button";
+import { Button } from '@nextui-org/button';
 import { IconAlertTriangle } from '@tabler/icons-react';
 
 // ADD ERROR HANDELING FOR API ROUTE CALLS
@@ -21,8 +22,6 @@ export default function Test() {
   const [isLoading, setIsLoading] = useState(false);
   const [filesList, setFilesList] = useState<any[]>([]);
   const [filesTranscoded, setfilesTranscoded] = useState<any[]>([]);
-
-  
 
   // fetch existing files in input and output bucket
   useEffect(() => {
@@ -35,9 +34,6 @@ export default function Test() {
     try {
       const response = await fetch('/api/getFiles');
       const files = await response.json();
-      //DEBUGG
-      //console.log(files);
-      //DEBUGG END
 
       setFilesList(files);
     } catch (error) {
@@ -50,9 +46,6 @@ export default function Test() {
     try {
       const response = await fetch('/api/getTranscodedFiles');
       const files = await response.json();
-      //DEBUGG
-      //console.log(files);
-      //DEBUGG END
       setfilesTranscoded(files);
     } catch (error) {
       console.error('Error fetching output files:', error);
@@ -68,7 +61,7 @@ export default function Test() {
     const files = Object.values(fileInputRef.current.files);
     const filesInfo: any[] = files.map((file) => ({
       originalFileName: file.name,
-      fileSize: file.size,
+      fileSize: file.size
     }));
 
     // get presigned urls for the files
@@ -83,7 +76,7 @@ export default function Test() {
     const response = await fetch('/api/presignedUrl', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(files),
+      body: JSON.stringify(files)
     });
     const result = await response.json();
     return result;
@@ -93,19 +86,16 @@ export default function Test() {
     return await fetch(presignedUrl.url, {
       method: 'PUT',
       body: file,
-      headers: { 'Content-Type': file.type, 'Access-Control-Allow-Origin': '*' },
+      headers: { 'Content-Type': file.type, 'Access-Control-Allow-Origin': '*' }
     });
   };
 
   // generate presigned urls for sending to SVT encore
   const getPresignedUrlsEncore = async (files: any) => {
-    // DEBUGG
-    //console.log("FILES IN ENCORE FUNCTION FRONTEND: ", files);
-    // DEBUGG END
     const response = await fetch('/api/presignedEncore', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(files),
+      body: JSON.stringify(files)
     });
     const result = await response.json();
     return result;
@@ -115,7 +105,9 @@ export default function Test() {
     const uploadToS3Response = await Promise.all(
       presignedUrls.map((presignedUrl: any) => {
         const file = files.find(
-          (file) => file.name === presignedUrl.originalFileName && file.size === presignedUrl.fileSize
+          (file) =>
+            file.name === presignedUrl.originalFileName &&
+            file.size === presignedUrl.fileSize
         );
         if (!file) throw new Error('File not found');
         return uploadMinio(presignedUrl, file);
@@ -127,47 +119,35 @@ export default function Test() {
       return;
     }
     alert('Upload successful');
-    //DEBUGG
-    //console.log("files uploaded: ",presignedUrls);
-    //DEBUGG END
-    
+
     const presignedEncore = await getPresignedUrlsEncore(presignedUrls);
-    //DEBUGG
-    //console.log("PRESIGNED URLS FOR ENCORE: ", presignedEncore);
-    //DEBUGG END
+
     const transcodedPresignedUrls = await handleTranscoding(presignedEncore);
     // refresh list after upload
     fetchTranscodedfiles();
   };
 
-  // transcoding function using Eyevinns client core SDK 
+  // transcoding function using Eyevinns client core SDK
   const handleTranscoding = async (presignedUrls: string[]) => {
-    //DEBUGG
-    //console.log("PRESIGNED URLS PRETRANSCODE: ", presignedUrls)
-    //DEBUGG END
     try {
       const response = await fetch('/api/transcode', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ presignedUrls }),
+        body: JSON.stringify({ presignedUrls })
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Failed to transcode');
       }
-  
+
       const data = await response.json();
-      // DEBUGG
-      console.log('Transcoding successful:', data);
-      // DEBUGG END
-      alert('Transcoding completed successfully!');
+      //alert('Transcoding completed successfully!');
       // get presigned urls for the transcoded files
-      const presignedUrlsTranscoded = await getPresignedTranscoded(data.results[0].vodUrl);  
-      // DEBUGG
-      console.log("PRESIGNED TRANSCODED URL",presignedUrlsTranscoded);
-      // DEBUGG END
-      alert('PRESIGNED URLS FETCHED!');
+      const presignedUrlsTranscoded = await getPresignedTranscoded(
+        data.results[0].vodUrl
+      );
+      //alert('Presigned urls fetched!');
       // refresh transcoded files list
       fetchTranscodedfiles();
     } catch (error) {
@@ -178,13 +158,10 @@ export default function Test() {
 
   // generate presigned urls for transcoded files
   const getPresignedTranscoded = async (files: any) => {
-    // DEBUGG
-    //console.log("FETCHING PRESIGNED URL FOR: ",files);
-    // DEBUGG END
     const response = await fetch('/api/presignedTranscoded', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(files),
+      body: JSON.stringify(files)
     });
     const result = await response.json();
     return result;
@@ -197,10 +174,10 @@ export default function Test() {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          fileName: fileName,
-        }),
+          fileName: fileName
+        })
       });
-  
+
       if (response.ok) {
         alert('File deleted successfully');
         fetchFilesList(); // refresh list after deletion
@@ -214,14 +191,13 @@ export default function Test() {
     }
   };
 
-
   // FUNCTION TO EMPTY OUTPUT BUCKET ONLY FOR DEBUGGING
   const handleEmptyBucket = async () => {
     setIsLoading(true);
 
     try {
       const response = await fetch('/api/emptyBucket', {
-        method: 'DELETE',
+        method: 'DELETE'
       });
 
       const result = await response.json();
@@ -240,13 +216,12 @@ export default function Test() {
       setIsLoading(false);
     }
   };
-  
 
   const columns = [
     { key: 'key', label: 'NAME' },
     { key: 'size', label: 'SIZE (bytes)' },
     { key: 'lastModified', label: 'MODIFIED' },
-    { key: 'actions', label: 'ACTIONS' },
+    { key: 'actions', label: 'ACTIONS' }
   ];
 
   return (
@@ -254,7 +229,11 @@ export default function Test() {
       <h1 className="text-3xl font-bold mb-4">File Upload</h1>
 
       {/* Upload Form */}
-      <UploadFilesFormUI isLoading={isLoading} fileInputRef={fileInputRef} uploadToServer={uploadToServer} />
+      <UploadFilesFormUI
+        isLoading={isLoading}
+        fileInputRef={fileInputRef}
+        uploadToServer={uploadToServer}
+      />
 
       {/* Display Files List */}
       <div className="mt-8 w-3/4">
@@ -293,7 +272,10 @@ export default function Test() {
       {/* Display Output Files List */}
       <div className="mt-8 w-3/4">
         {/* BUTTON FOR EMPTYING OUTPUT BUCKET DEBUGG */}
-        <Button color="danger" onClick={handleEmptyBucket}> Empty Output Bucket</Button>
+        <Button color="danger" onClick={handleEmptyBucket}>
+          {' '}
+          Empty Output Bucket
+        </Button>
         {/* BUTTON FOR EMPTYING OUTPUT BUCKET DEBUGG */}
         <h2 className="text-2xl font-semibold">Transcoded files in Bucket:</h2>
         <Table aria-label="Transcoded Files in Bucket">
@@ -326,7 +308,6 @@ export default function Test() {
           </TableBody>
         </Table>
       </div>
-
     </main>
   );
 }
