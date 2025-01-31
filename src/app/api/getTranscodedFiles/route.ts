@@ -1,23 +1,22 @@
-import { outputMinioClient } from '../../lib/file-managment'; // Path to your MinIO client
-import { NextRequest, NextResponse } from 'next/server';
+import { outputMinioClient } from '../../lib/file-managment';
+import { NextResponse } from 'next/server';
+import { FileObjectTranscode } from '../../lib/types';
 
 export async function GET() {
-
   try {
     // fetch all buckets
     const buckets = await outputMinioClient.listBuckets();
-    console.log("buckets in output : ", buckets);
+    console.log('buckets in output : ', buckets);
 
-    const allFiles: any[] = [];
+    const allFiles: FileObjectTranscode[] = [];
     for (const bucket of buckets) {
       const bucketName = bucket.name;
-      const files: any[] = [];
+      const files: FileObjectTranscode[] = [];
 
       // fetch all files in all subfolders/buckets
       const stream = outputMinioClient.listObjectsV2(bucketName, '', true);
       await new Promise<void>((resolve, reject) => {
-        // CREATE INTERFACE FOR DATA
-        stream.on('data', async (obj: any) => {
+        stream.on('data', async (obj: FileObjectTranscode) => {
           try {
             // check if the file actually exists
             //await outputMinioClient.statObject(bucketName, obj.name);
@@ -25,9 +24,9 @@ export async function GET() {
             // add existing files to the list
             files.push({
               bucket: bucketName,
-              key: obj.name,
+              name: obj.name,
               size: obj.size,
-              lastModified: obj.lastModified,
+              lastModified: obj.lastModified
             });
           } catch (statError) {
             console.warn(`File not found: ${obj.name}`, statError);

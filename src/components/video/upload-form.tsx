@@ -9,7 +9,7 @@ interface UploadFilesFormUIProps {
 export default function UploadFilesFormUI({
   isLoading,
   fileInputRef,
-  uploadToServer,
+  uploadToServer
 }: UploadFilesFormUIProps) {
   return (
     <form onSubmit={uploadToServer}>

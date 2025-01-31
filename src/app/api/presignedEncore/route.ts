@@ -1,4 +1,4 @@
-import { minioClient } from '../../lib/file-managment'; 
+import { minioClient } from '../../lib/file-managment';
 import { NextRequest, NextResponse } from 'next/server';
 
 const bucketName = 'input';
@@ -27,12 +27,12 @@ export async function POST(req: NextRequest) {
           'GET',
           bucketName,
           fileNameInBucket,
-          60 * 60  // 1-hour expiry
+          60 * 60 // 1-hour expiry
         );
 
         return {
           fileNameInBucket,
-          url,
+          url
         };
       })
     );
