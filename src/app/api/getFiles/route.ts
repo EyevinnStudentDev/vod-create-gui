@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { minioClient } from '../../lib/file-managment';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { Client } from 'minio';
+import { FileObject } from '../../lib/types';
 
 export async function GET() {
   try {
@@ -9,10 +8,10 @@ export async function GET() {
     const buckets = await minioClient.listBuckets();
     console.log('buckets in input: ', buckets);
 
-    const allFiles: any[] = [];
+    const allFiles: FileObject[] = [];
     for (const bucket of buckets) {
-      const bucketName = bucket.name;
-      const files: any[] = [];
+      const bucketName: string = bucket.name;
+      const files: FileObject[] = [];
 
       // fetch all files in all subfolders/buckets
       const stream = minioClient.listObjectsV2(bucketName, '', true);

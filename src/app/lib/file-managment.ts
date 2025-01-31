@@ -1,5 +1,4 @@
 import * as Minio from 'minio';
-import type internal from 'stream';
 
 // init output minio client
 export const outputMinioClient = new Minio.Client({

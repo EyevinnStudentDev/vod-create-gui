@@ -1,10 +1,10 @@
 import { outputMinioClient } from '../../lib/file-managment';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
 const bucketName = 'output';
 
 // THIS FUNCTION IS SOLEY FOR DEBUGGING
-export async function DELETE(req: NextRequest) {
+export async function DELETE() {
   try {
     const objectsList = [];
     const stream = outputMinioClient.listObjectsV2(bucketName, '', true);

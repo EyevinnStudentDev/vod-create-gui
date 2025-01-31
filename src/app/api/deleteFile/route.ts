@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { minioClient, deleteFileFromMinio } from '../../lib/file-managment';
+import { deleteFileFromMinio } from '../../lib/file-managment';
 
 const bucketName = process.env.AWS_TENANT_BUCKET || '';
 export async function DELETE(req: NextRequest) {

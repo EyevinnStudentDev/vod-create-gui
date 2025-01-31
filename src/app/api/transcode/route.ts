@@ -1,11 +1,7 @@
 import { NextResponse } from 'next/server';
 import { Context } from '@osaas/client-core';
 import { createVod, createVodPipeline } from '@osaas/client-transcode';
-
-interface PresignedUrlData {
-  fileNameInBucket: string;
-  url: string;
-}
+import { PresignedUrlData } from '../../lib/types';
 
 export async function POST(req: Request) {
   try {
@@ -28,17 +24,24 @@ export async function POST(req: Request) {
     const results = await Promise.all(
       presignedUrls.map(async (urlData) => {
         const vod = await createVod(pipeline, urlData.url, ctx);
-        console.log('VOD :  ', vod);
         return vod;
       })
     );
 
     return NextResponse.json({ message: 'Transcoding successful', results });
-  } catch (error: any) {
-    console.error('Error during transcoding:', error);
-    return NextResponse.json(
-      { error: 'Transcoding failed', details: error.message },
-      { status: 500 }
-    );
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error('Error during transcoding:', error.message);
+      return NextResponse.json(
+        { error: 'Transcoding failed', details: error.message },
+        { status: 500 }
+      );
+    } else {
+      console.error('Unknown error during transcoding:', error);
+      return NextResponse.json(
+        { error: 'An unexpected error occurred' },
+        { status: 500 }
+      );
+    }
   }
 }

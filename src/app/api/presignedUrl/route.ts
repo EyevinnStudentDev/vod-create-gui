@@ -1,18 +1,18 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
 import {
   createPresignedUrlToUpload,
   minioClient
 } from '../../lib/file-managment';
 import { nanoid } from 'nanoid';
 import { NextRequest, NextResponse } from 'next/server';
+import { FileUploadRequest, PresignedUrlResponse } from '../../lib/types';
 
 const bucketName = process.env.AWS_TENANT_BUCKET || '';
 const expiry = 60 * 60; // 24 hours
 
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest) {
   // parse request body as JSON
   const body = await req.json();
-  const files = body as any[];
+  const files = body as FileUploadRequest[];
 
   if (!files?.length) {
     return NextResponse.json({ message: 'No files to upload' });
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     console.log(`Bucket "${bucketName}" created successfully.`);
   }
 
-  const presignedUrls = [] as any[];
+  const presignedUrls: PresignedUrlResponse[] = [];
 
   if (files?.length) {
     // use Promise.all to get all the presigned URLs in parallel
