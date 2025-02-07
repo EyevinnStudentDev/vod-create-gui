@@ -24,11 +24,11 @@
 
 ## Features
 
-✅ **Upload video files** into MinIO for secure storage  
-✅ **Transcode video** into HLS format for streaming  
-✅ **Presigned URL generation** for secure file uploads  
-✅ **Built with Next.js** for modern web development  
-✅ **Docker support** for easy deployment  
+- **Upload video files** into MinIO for secure storage  
+- **Transcode video** into HLS format for streaming  
+- **Presigned URL generation** for secure file uploads  
+- **Built with Next.js** for modern web development  
+- **Docker support** for easy deployment  
 
 ---
 
