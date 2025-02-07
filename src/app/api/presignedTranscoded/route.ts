@@ -1,5 +1,6 @@
 import { outputMinioClient } from '../../lib/file-managment';
 import { NextRequest, NextResponse } from 'next/server';
+export const dynamic = 'force-dynamic';
 
 const bucketName = 'output';
 const expiry = 60 * 60; // Default to 1 hour if expiry is not provided

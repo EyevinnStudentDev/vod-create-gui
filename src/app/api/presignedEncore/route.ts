@@ -1,5 +1,6 @@
 import { minioClient } from '../../lib/file-managment';
 import { NextRequest, NextResponse } from 'next/server';
+export const dynamic = 'force-dynamic';
 
 const bucketName = 'input';
 

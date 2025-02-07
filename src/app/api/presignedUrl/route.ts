@@ -9,9 +9,13 @@ import { FileUploadRequest, PresignedUrlResponse } from '../../lib/types';
 const bucketName = process.env.AWS_TENANT_BUCKET || '';
 const expiry = 60 * 60; // 24 hours
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
   // parse request body as JSON
   const body = await req.json();
+  // DEBUGG
+  console.log('BODY IN PRESIGNED: ', body);
   const files = body as FileUploadRequest[];
 
   if (!files?.length) {

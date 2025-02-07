@@ -1,6 +1,7 @@
 import { outputMinioClient } from '../../lib/file-managment';
 import { NextResponse } from 'next/server';
 import { FileObjectTranscode } from '../../lib/types';
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {

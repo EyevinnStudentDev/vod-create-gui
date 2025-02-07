@@ -15,6 +15,7 @@ import { Button } from '@nextui-org/button';
 import {
   FileObject,
   FileUploadRequest,
+  FileObjectTranscode,
   PresignedUrlResponse
 } from '../lib/types';
 
@@ -22,7 +23,7 @@ import {
 export default function Test() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [filesList, setFilesList] = useState<FileObject[]>([]);
+  const [filesList, setFilesList] = useState<FileObjectTranscode[]>([]);
   const [filesTranscoded, setFilesTranscoded] = useState<FileObject[]>([]);
 
   // Fetch existing files in input and output buckets
@@ -34,7 +35,7 @@ export default function Test() {
   const fetchFilesList = async (): Promise<void> => {
     try {
       const response = await fetch('/api/getFiles');
-      const files: FileObject[] = await response.json();
+      const files: FileObjectTranscode[] = await response.json();
       setFilesList(files);
     } catch (error) {
       console.error('Error fetching input files:', error);
@@ -258,14 +259,14 @@ export default function Test() {
           </TableHeader>
           <TableBody>
             {filesList.map((row) => (
-              <TableRow key={row.key}>
+              <TableRow key={row.name}>
                 {(columnKey) => (
                   <TableCell>
                     {columnKey === 'actions' ? (
                       <Button
                         color="danger"
                         size="sm"
-                        onClick={() => deleteFile(row.key ?? '')}
+                        onClick={() => deleteFile(row.name ?? '')}
                       >
                         Delete
                       </Button>

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { Context } from '@osaas/client-core';
 import { createVod, createVodPipeline } from '@osaas/client-transcode';
 import { PresignedUrlData } from '../../lib/types';
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
   try {

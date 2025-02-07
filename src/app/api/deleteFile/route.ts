@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { deleteFileFromMinio } from '../../lib/file-managment';
+export const dynamic = 'force-dynamic';
 
 const bucketName = process.env.AWS_TENANT_BUCKET || '';
 export async function DELETE(req: NextRequest) {
