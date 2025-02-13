@@ -57,25 +57,27 @@ npm install
 
 ### **3. Set Up Environment Variables**
 
-Create a `.env` file in the root directory and add the following configuration, where you replace the values with corresponding values from your services. All of which are available at Eyevinn's OSAAS: https://app.osaas.io/:
+Create a `.env` file in the root directory and add the following configuration, where you replace the values with corresponding values from your services. All of which are available at Eyevinn's OSAAS: https://app.osaas.io/.
+To clarify, you need two MinIO buckets, one where untranscoded files will be stored and one output bucket where transcoded files will be stored.
 
 ```bash
-# for API calls to OSAAS
+# OSAAS
 OSC_ACCESS_TOKEN=OSC_ACCESS_TOKEN
 
-
-# MinIO input bucket
-AWS_ACCESS_KEY=AWS_ACCESS_KEY
-AWS_SECRET_ACCESS_KEY=AWS_SECRET_ACCESS_KEY
-AWS_TENANT_BUCKET=AWS_TENANT_BUCKET
-
-# MinIO output bucket
-AWS_URL_OUT=AWS_URL_OUT
-AWS_ACCESS_KEY_OUT=AWS_ACCESS_KEY_OUT
-AWS_SECRET_ACCESS_KEY_OUT=AWS_SECRET_ACCESS_KEY_OUT
-
-AWS_URL=AWS_URL
+# Minio bucket shared
 AWS_SSL=AWS_SSL
+
+# Minio Bucket Input
+AWS_URL=AWS_URL (exmple: "user-input.minio-minio.auto.prod.osaas.io")
+AWS_ACCESS_KEY=AWS_ACCESS_KEY               (MinIO Input Access Key)
+AWS_SECRET_ACCESS_KEY=AWS_SECRET_ACCESS_KEY (MinIO Input Secret Key)
+AWS_TENANT_BUCKET=AWS_TENANT_BUCKET         (MinIO Input Bucket Name)
+
+# Minio Bucket Output
+AWS_URL_OUT=AWS_URL_OUT
+AWS_ACCESS_KEY_OUT=AWS_ACCESS_KEY_OUT       (MinIO Output Access Key)
+AWS_SECRET_ACCESS_KEY_OUT=AWS_SECRET_ACCESS_KEY_OUT (MinIO Output Secret Key)
+AWS_TENANT_BUCKET_OUT=AWS_TENANT_BUCKET_OUT (MinIO Output Bucket Name)
 ```
 
 ### **4. Run the Application**

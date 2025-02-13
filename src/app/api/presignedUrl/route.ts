@@ -56,6 +56,5 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  console.log('Presigned URLs:', presignedUrls);
   return NextResponse.json(presignedUrls);
 }

@@ -2,7 +2,7 @@ import { outputMinioClient } from '../../lib/file-managment';
 import { NextRequest, NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic';
 
-const bucketName = 'output';
+const bucketName = process.env.AWS_TENANT_BUCKET_OUT || '';
 const expiry = 60 * 60; // Default to 1 hour if expiry is not provided
 
 export async function POST(req: NextRequest) {

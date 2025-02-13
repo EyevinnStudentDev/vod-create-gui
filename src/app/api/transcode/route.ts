@@ -4,6 +4,8 @@ import { createVod, createVodPipeline } from '@osaas/client-transcode';
 import { PresignedUrlData } from '../../lib/types';
 export const dynamic = 'force-dynamic';
 
+const bucketName = process.env.AWS_TENANT_BUCKET_OUT || '';
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -18,7 +20,7 @@ export async function POST(req: Request) {
       personalAccessToken: process.env.OSC_ACCESS_TOKEN
     });
     ctx.activateService('minio');
-    const pipeline = await createVodPipeline('output', ctx);
+    const pipeline = await createVodPipeline(bucketName, ctx);
 
     // transcode all presigned URLs in the array
     const results = await Promise.all(

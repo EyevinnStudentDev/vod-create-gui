@@ -2,7 +2,7 @@ import { outputMinioClient } from '../../lib/file-managment';
 import { NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic';
 
-const bucketName = 'output';
+const bucketName = process.env.AWS_TENANT_BUCKET_OUT || '';
 
 // THIS FUNCTION IS SOLEY FOR DEBUGGING
 export async function DELETE() {
