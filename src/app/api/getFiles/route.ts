@@ -7,7 +7,6 @@ export async function GET() {
   try {
     // fetch all buckets
     const buckets = await minioClient.listBuckets();
-    console.log('buckets in input: ', buckets);
 
     const allFiles: FileObjectTranscode[] = [];
     for (const bucket of buckets) {

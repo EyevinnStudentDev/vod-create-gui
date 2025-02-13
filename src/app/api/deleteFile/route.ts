@@ -6,7 +6,6 @@ const bucketName = process.env.AWS_TENANT_BUCKET || '';
 export async function DELETE(req: NextRequest) {
   try {
     const { fileName } = await req.json();
-    console.log(fileName, bucketName);
 
     if (!fileName) {
       return NextResponse.json(

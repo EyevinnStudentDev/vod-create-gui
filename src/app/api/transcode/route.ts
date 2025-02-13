@@ -8,7 +8,6 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     const { presignedUrls }: { presignedUrls: PresignedUrlData[] } = body;
-    console.log(presignedUrls);
 
     if (!presignedUrls || !Array.isArray(presignedUrls)) {
       return NextResponse.json({ error: 'Invalid input.' }, { status: 400 });

@@ -14,8 +14,7 @@ export const dynamic = 'force-dynamic';
 export async function POST(req: NextRequest) {
   // parse request body as JSON
   const body = await req.json();
-  // DEBUGG
-  console.log('BODY IN PRESIGNED: ', body);
+
   const files = body as FileUploadRequest[];
 
   if (!files?.length) {

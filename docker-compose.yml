@@ -17,8 +17,6 @@ services:
       - AWS_URL_OUT=${AWS_URL_OUT}
       - AWS_ACCESS_KEY_OUT=${AWS_ACCESS_KEY_OUT}
       - AWS_SECRET_ACCESS_KEY_OUT=${AWS_SECRET_ACCESS_KEY_OUT}
-      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
-      - MINIO_SECRET_ACCESS_KEY=${MINIO_SECRET_ACCESS_KEY}
     volumes:
       - .:/app
       - /app/node_modules
@@ -31,10 +29,6 @@ services:
       - '9000:9000'
       - '9090:9090' # MinIO Console
     environment:
-      - MINIO_ROOT_USER=admin
-      - MINIO_ROOT_PASSWORD=admin123
-      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
-      - MINIO_SECRET_ACCESS_KEY=${MINIO_SECRET_ACCESS_KEY}
       - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
       - AWS_TENANT_BUCKET=${AWS_TENANT_BUCKET}

@@ -1,34 +1,12 @@
 import * as Minio from 'minio';
 
-const MINIO_ENDPOINT_IN =
-  process.env.AWS_URL || process.env.MINIO_ENDPOINT || 'minio';
-const MINIO_ENDPOINT_OUT =
-  process.env.AWS_URL_OUT || process.env.MINIO_ENDPOINT || 'minio';
+const MINIO_ENDPOINT_IN = process.env.AWS_URL || 'minio';
+const MINIO_ENDPOINT_OUT = process.env.AWS_URL_OUT || 'minio';
 const MINIO_PORT =
   process.env.AWS_SSL === 'true'
     ? 443
     : parseInt(process.env.MINIO_PORT || '9000', 10);
 const MINIO_SSL = process.env.AWS_SSL === 'true';
-
-console.log('🔍 Debugging Environment Variables:');
-console.log('AWS_URL:', process.env.AWS_URL);
-console.log('AWS_URL_OUT:', process.env.AWS_URL_OUT);
-console.log('MINIO_ENDPOINT:', process.env.MINIO_ENDPOINT);
-console.log('AWS_ACCESS_KEY:', process.env.AWS_ACCESS_KEY);
-console.log('AWS_SECRET_ACCESS_KEY:', process.env.AWS_SECRET_ACCESS_KEY);
-console.log('AWS_ACCESS_KEY_OUT:', process.env.AWS_ACCESS_KEY_OUT);
-console.log(
-  'AWS_SECRET_ACCESS_KEY_OUT:',
-  process.env.AWS_SECRET_ACCESS_KEY_OUT
-);
-console.log('AWS_TENANT_BUCKET:', process.env.AWS_TENANT_BUCKET);
-console.log('AWS_SSL:', process.env.AWS_SSL);
-console.log('MINIO_PORT:', process.env.MINIO_PORT);
-console.log('🔍 MinIO Configuration:');
-console.log('MINIO_ENDPOINT_IN:', MINIO_ENDPOINT_IN);
-console.log('MINIO_ENDPOINT_OUT:', MINIO_ENDPOINT_OUT);
-console.log('MINIO_PORT:', MINIO_PORT);
-console.log('MINIO_SSL:', MINIO_SSL);
 
 // init output minio client
 export const outputMinioClient = new Minio.Client({

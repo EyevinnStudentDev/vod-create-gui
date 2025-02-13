@@ -25,6 +25,7 @@ export default function Test() {
   const [isLoading, setIsLoading] = useState(false);
   const [filesList, setFilesList] = useState<FileObjectTranscode[]>([]);
   const [filesTranscoded, setFilesTranscoded] = useState<FileObject[]>([]);
+  const [presignedUrls, setPresignedUrls] = useState<string[]>([]);
 
   // Fetch existing files in input and output buckets
   useEffect(() => {
@@ -76,7 +77,9 @@ export default function Test() {
       const presignedEncore = await getPresignedUrlsEncore(presignedUrls); // Get presigned urls for uploaded files to send to SVT Encore
       const transcodedPresignedUrls = await handleTranscoding(presignedEncore); // Send presigned urls to SVT Encore
       console.log('TRANSCODED URL', transcodedPresignedUrls);
-      fetchTranscodedFiles();
+      // presigned urls for transcoded files
+      setPresignedUrls(transcodedPresignedUrls);
+      fetchTranscodedFiles(); // refresh transcoded files list
     } catch (error) {
       console.error('Error uploading files:', error);
     } finally {
@@ -116,7 +119,6 @@ export default function Test() {
       }
 
       const data = await response.json();
-      console.log(data);
       // get presigned urls for the transcoded files
       const presignedUrlsTranscoded = await getPresignedTranscoded(
         data.results[0].vodUrl
@@ -238,6 +240,12 @@ export default function Test() {
     { key: 'lastModified', label: 'MODIFIED' },
     { key: 'actions', label: 'ACTIONS' }
   ];
+  const columns_out = [
+    { key: 'name', label: 'NAME' },
+    { key: 'size', label: 'SIZE (bytes)' },
+    { key: 'lastModified', label: 'MODIFIED' },
+    { key: 'actions', label: 'ACTIONS' }
+  ];
 
   return (
     <main className="flex flex-col items-center w-screen h-screen">
@@ -288,13 +296,13 @@ export default function Test() {
         <h2 className="text-2xl font-semibold">Transcoded files in Bucket:</h2>
         <Table aria-label="Transcoded Files in Bucket">
           <TableHeader>
-            {columns.map((column) => (
+            {columns_out.map((column) => (
               <TableColumn key={column.key}>{column.label}</TableColumn>
             ))}
           </TableHeader>
           <TableBody>
-            {filesTranscoded.map((row) => (
-              <TableRow key={row.key}>
+            {filesTranscoded.map((row, index) => (
+              <TableRow key={row.key || index}>
                 {(columnKey) => (
                   <TableCell>
                     {columnKey === 'actions' ? (

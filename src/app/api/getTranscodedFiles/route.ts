@@ -7,7 +7,6 @@ export async function GET() {
   try {
     // fetch all buckets
     const buckets = await outputMinioClient.listBuckets();
-    console.log('buckets in output : ', buckets);
 
     const allFiles: FileObjectTranscode[] = [];
     for (const bucket of buckets) {
@@ -40,7 +39,6 @@ export async function GET() {
 
       allFiles.push(...files);
     }
-    console.log(allFiles);
     return NextResponse.json(allFiles);
   } catch (error) {
     console.error('Error listing files:', error);

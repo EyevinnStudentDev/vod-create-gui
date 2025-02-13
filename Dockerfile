@@ -1,74 +1,56 @@
-# 🟢 Base Stage
 FROM node:20-alpine AS base
-WORKDIR /app
 
 # Install dependencies only when needed
 FROM base AS deps
+# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 RUN apk add --no-cache libc6-compat g++ cmake tar make
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
-RUN npm ci
+WORKDIR /app
 
-# 🟢 Build Stage
+# Install dependencies based on the preferred package manager
+COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
+# Uncomment the line below if you need to use patch-package again
+RUN --mount=type=secret,id=npmrc,target=/root/.npmrc \
+  npm ci;
+
+
+# Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-COPY . . 
+COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED 1
 
-# Pass environment variables at build time
-ARG OSC_ACCESS_TOKEN
-ENV OSC_ACCESS_TOKEN=$OSC_ACCESS_TOKEN
 
-ARG AWS_ACCESS_KEY
-ENV AWS_ACCESS_KEY=$AWS_ACCESS_KEY
-
-ARG AWS_SECRET_ACCESS_KEY
-ENV AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-
-ARG AWS_URL
-ENV AWS_URL=$AWS_URL
-
-ARG AWS_SSL
-ENV AWS_SSL=$AWS_SSL
-
-ARG AWS_URL_OUT
-ENV AWS_URL_OUT=$AWS_URL_OUT
-
-ARG AWS_ACCESS_KEY_OUT
-ENV AWS_ACCESS_KEY_OUT=$AWS_ACCESS_KEY_OUT
-
-ARG AWS_SECRET_ACCESS_KEY_OUT
-ENV AWS_SECRET_ACCESS_KEY_OUT=$AWS_SECRET_ACCESS_KEY_OUT
-
-ARG MINIO_ACCESS_KEY
-ENV MINIO_ACCESS_KEY=$MINIO_ACCESS_KEY
-
-ARG MINIO_SECRET_ACCESS_KEY
-ENV MINIO_SECRET_ACCESS_KEY=$MINIO_SECRET_ACCESS_KEY
-
-# Build the Next.js app
 RUN npm run build
 
-# 🟢 Production Stage (Nginx to Serve Static Files)
-FROM nginx:stable-alpine3.17 AS production
-WORKDIR /usr/share/nginx/html
+# Production image, copy all the files and run next
+FROM base AS runner
+WORKDIR /app
 
-# Copy Next.js static build output to Nginx serving directory
-COPY --from=builder /app/.next/static /usr/share/nginx/html/static
-COPY --from=builder /app/public /usr/share/nginx/html/public
+ENV NODE_ENV production
+ENV NEXT_TELEMETRY_DISABLED 1
 
-# Copy a custom Nginx config if needed
-COPY ./nginx.conf /etc/nginx/nginx.conf
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
 
-# Add entrypoint script and give execution permission
-COPY ./entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+COPY --from=builder /app/public ./public
 
-EXPOSE 8080
+# Set the correct permission for prerender cache
+RUN mkdir .next
+RUN chown nextjs:nodejs .next
 
-# Set entrypoint for custom startup behavior
-ENTRYPOINT ["/entrypoint.sh"]
+# Automatically leverage output traces to reduce image size
+# https://nextjs.org/docs/advanced-features/output-file-tracing
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Start Nginx
-CMD ["nginx", "-g", "daemon off;"]
+USER nextjs
+
+EXPOSE 3000
+
+ENV PORT 3000
+# set hostname to localhost
+ENV HOSTNAME "0.0.0.0"
+
+CMD npm_package_version=$(npm pkg get version | sed 's/\"//g') node server.js

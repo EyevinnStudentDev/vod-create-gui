@@ -1,6 +1,9 @@
 #!/bin/sh
+set -e
 
-BIND_PORT="${PORT:-8080}"
-echo "server { listen $BIND_PORT; server_name _; root /usr/share/nginx/html;  location / { try_files \$uri /index.html; } }" > /etc/nginx/conf.d/default.conf
+# Check if PORT is set, otherwise default to 3000
+PORT=${PORT:-3000}
+echo "Starting Next.js application on port $PORT..."
 
-exec "$@"
+# Run Next.js application with the correct port
+exec npm run start -- -p $PORT
