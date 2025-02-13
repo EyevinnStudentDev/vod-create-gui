@@ -5,9 +5,6 @@
 <div align="center">
     <strong>VOD Create GUI</strong> is a user-friendly web-based application designed to simplify video transcoding and storage management using MinIO. Upload videos, transcode them to streaming-friendly formats, and efficiently manage your video content.
   <br />
-  <br />
-  :book: <b><a href="https://eyevinn.github.io/{{repo-name}}/">Read the documentation (github pages)</a></b> :eyes:
-  <br />
 </div>
 
 <div align="center">
