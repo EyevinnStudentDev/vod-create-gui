@@ -1,5 +1,9 @@
 FROM node:20-alpine AS base
 
+# Port number
+ARG PORT=3000
+EXPOSE $PORT
+
 # Install dependencies only when needed
 FROM base AS deps
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
@@ -11,6 +15,7 @@ COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 # Uncomment the line below if you need to use patch-package again
 RUN --mount=type=secret,id=npmrc,target=/root/.npmrc \
   npm ci;
+
 
 
 # Rebuild the source code only when needed
@@ -45,12 +50,20 @@ RUN chown nextjs:nodejs .next
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# entrypoint
+COPY scripts/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 USER nextjs
 
 EXPOSE 3000
 
+# port enviromental variable
 ENV PORT 3000
+
 # set hostname to localhost
 ENV HOSTNAME "0.0.0.0"
 
-CMD npm_package_version=$(npm pkg get version | sed 's/\"//g') node server.js
+#CMD npm_package_version=$(npm pkg get version | sed 's/\"//g') node server.js
+
+ENTRYPOINT [ "/entrypoint.sh" ]
