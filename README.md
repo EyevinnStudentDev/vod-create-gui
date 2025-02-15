@@ -78,6 +78,9 @@ AWS_URL_OUT=AWS_URL_OUT
 AWS_ACCESS_KEY_OUT=AWS_ACCESS_KEY_OUT       (MinIO Output Access Key)
 AWS_SECRET_ACCESS_KEY_OUT=AWS_SECRET_ACCESS_KEY_OUT (MinIO Output Secret Key)
 AWS_TENANT_BUCKET_OUT=AWS_TENANT_BUCKET_OUT (MinIO Output Bucket Name)
+
+# Port number
+PORT=PORT                                   (Port number on which the application will be run)
 ```
 
 ### **4. Run the Application**
