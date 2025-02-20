@@ -140,10 +140,13 @@ This will start the application in a Docker image.
 ## **Development Notes**
 
 - The **frontend** is built using **Next.js, TailwindCSS, and TypeScript**.
-- The **backend** uses **Next.js API routes** to manage video uploads and processing.
+- The **backend** uses **Next.js API routes** and SVT Encore to manage video uploads and processing.
 - **MinIO** is used for storing video files before and after transcoding.
 
 ---
+
+## The Team
+- <a href="https://github.com/JinHedman">Filip Hedman</a>
 
 ## Contributing
 
